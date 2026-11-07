@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Book an appointment')}"></th:block>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header('booking')}"></header>
+
+<main id="main" class="booking">
+  <div class="section-head" style="margin-bottom: 8px">
+    <p class="eyebrow">Book an appointment</p>
+    <h1 class="h2">Visit us, or talk to us from home</h1>
+    <p class="lead">Come to the studio for a fitting, or book a video or phone consultation to discuss your outfit, references and budget.</p>
+  </div>
+
+  <form th:action="@{/book-a-fitting}" method="post" th:object="${appointment}" id="booking-form" th:attr="data-taken=${#strings.setJoin(taken, ',')}" novalidate>
+    <div class="alert alert-error" role="alert" th:if="${#fields.hasErrors('*')}">Please check the highlighted fields.</div>
+
+    <fieldset class="booking-step">
+      <legend class="field-label">What are we making</legend>
+      <div class="chips">
+        <label class="choice" th:each="g : ${garments}">
+          <input type="radio" th:field="*{garment}" th:value="${g}"><span th:text="${g}">Bridal lehenga</span>
+        </label>
+      </div>
+      <span class="error-text" th:errors="*{garment}"></span>
+    </fieldset>
+
+    <fieldset class="booking-step">
+      <legend class="field-label">Pick a day</legend>
+      <div class="day-grid">
+        <label class="choice day" th:each="d : ${days}">
+          <input type="radio" th:field="*{date}" th:value="${d}">
+          <span><span class="dow" th:text="${@fmt.dow(d)}">Tue</span><span class="date" th:text="${d.dayOfMonth}">10</span><span class="mon" th:text="${#strings.substring(d.month, 0, 3)}">NOV</span></span>
+        </label>
+      </div>
+      <span class="error-text" th:errors="*{date}"></span>
+    </fieldset>
+
+    <fieldset class="booking-step">
+      <legend class="field-label">Time</legend>
+      <div class="time-grid">
+        <label class="choice square" th:each="t : ${slots}">
+          <input type="radio" th:field="*{time}" th:value="${t}"><span th:text="${@fmt.time(t)}">10:00 am</span>
+        </label>
+      </div>
+      <span class="error-text" th:errors="*{time}"></span>
+    </fieldset>
+
+    <fieldset class="booking-step">
+      <legend class="field-label">How would you like to meet</legend>
+      <div class="stack">
+        <label class="radio-card" th:each="loc : ${locations}">
+          <input type="radio" th:field="*{location}" th:value="${loc}">
+          <span>
+            <b th:text="${loc.label}">Studio fitting</b>
+            <small th:switch="${loc.name()}">
+              <th:block th:case="'STUDIO'" th:text="|Measurements and trials at ${store.address}, ${store.city}|"></th:block>
+              <th:block th:case="'VIDEO_CALL'">We video call you on WhatsApp to see fabrics, designs and references together.</th:block>
+              <th:block th:case="'PHONE_CALL'">A quick call to discuss your outfit, timeline and budget.</th:block>
+            </small>
+          </span>
+        </label>
+      </div>
+      <span class="error-text" th:errors="*{location}"></span>
+    </fieldset>
+
+    <fieldset class="booking-step">
+      <legend class="field-label">Your details</legend>
+      <div class="form-grid">
+        <label class="field" th:classappend="${#fields.hasErrors('customerName')} ? 'has-error'">Full name
+          <input type="text" th:field="*{customerName}" autocomplete="name">
+          <span class="error" th:errors="*{customerName}"></span>
+        </label>
+        <label class="field" th:classappend="${#fields.hasErrors('phone')} ? 'has-error'">Phone (WhatsApp)
+          <input type="tel" th:field="*{phone}" autocomplete="tel" placeholder="+91 ">
+          <span class="error" th:errors="*{phone}"></span>
+        </label>
+        <label class="field full">Anything we should know? <span class="muted" style="font-weight: 400">(optional)</span>
+          <textarea th:field="*{notes}" rows="3" placeholder="Occasion date, references, budget…"></textarea>
+        </label>
+        <label class="check full">
+          <input type="checkbox" th:field="*{whatsappOptIn}">
+          <span>Send my confirmation and appointment reminders on WhatsApp to this number</span>
+        </label>
+      </div>
+    </fieldset>
+
+    <div style="padding-top: 24px; border-top: 1.5px dashed var(--gold-300)">
+      <button type="submit" class="btn btn-lg btn-block">Book appointment</button>
+    </div>
+  </form>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<a th:replace="~{fragments/layout :: whatsapp-fab}"></a>
+<script src="/js/booking.js" defer></script>
+</body>
+</html>

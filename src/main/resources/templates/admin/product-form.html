@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><th:block th:replace="~{admin/_nav :: head(${form.id} == null ? 'New product' : 'Edit product')}"></th:block></head>
+<body>
+<header th:replace="~{admin/_nav :: bar}"></header>
+<main class="container section-sm" style="max-width: 860px">
+  <h1 class="h2" style="margin-bottom: 24px" th:text="${form.id} == null ? 'New product' : ${form.name}">New product</h1>
+  <form th:action="@{/admin/products}" th:object="${form}" method="post" enctype="multipart/form-data" class="panel stack" style="gap: 24px">
+    <input type="hidden" th:field="*{id}">
+    <div class="form-grid">
+      <label class="field" th:classappend="${#fields.hasErrors('name')} ? 'has-error'">Name
+        <input type="text" th:field="*{name}" required><span class="error" th:errors="*{name}"></span>
+      </label>
+      <label class="field">Design code <span class="muted" style="font-weight: 400">(auto if empty)</span>
+        <input type="text" th:field="*{sku}" placeholder="SS-0009">
+      </label>
+      <label class="field" th:classappend="${#fields.hasErrors('categoryId')} ? 'has-error'">Category
+        <select th:field="*{categoryId}">
+          <option value="">Choose…</option>
+          <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+        </select>
+        <span class="error" th:errors="*{categoryId}"></span>
+      </label>
+      <label class="field" th:classappend="${#fields.hasErrors('price')} ? 'has-error'">Price (₹)
+        <input type="number" step="0.01" min="0" th:field="*{price}" required><span class="error" th:errors="*{price}"></span>
+      </label>
+      <label class="field full">Short detail <span class="muted" style="font-weight: 400">e.g. Raw silk · zardozi</span>
+        <input type="text" th:field="*{detail}">
+      </label>
+      <label class="field full">Description
+        <textarea th:field="*{description}" rows="5"></textarea>
+      </label>
+      <label class="field">Sizes <span class="muted" style="font-weight: 400">comma separated; empty = one size</span>
+        <input type="text" th:field="*{sizes}">
+      </label>
+      <label class="field">Lead time
+        <input type="text" th:field="*{leadTime}">
+      </label>
+      <label class="field" th:classappend="${#fields.hasErrors('image')} ? 'has-error'">Upload photo <span class="muted" style="font-weight: 400">JPG, PNG or WebP, portrait</span>
+        <input type="file" name="image" accept="image/jpeg,image/png,image/webp" class="input">
+        <span class="error" th:errors="*{image}"></span>
+      </label>
+      <label class="field">…or image URL
+        <input type="url" th:field="*{imageUrl}" placeholder="https://">
+      </label>
+      <label class="field" th:classappend="${#fields.hasErrors('washColor')} ? 'has-error'">Placeholder colour
+        <input type="text" th:field="*{washColor}"><span class="error" th:errors="*{washColor}"></span>
+      </label>
+      <div class="field full" style="flex-direction: row; flex-wrap: wrap; gap: 8px 24px">
+        <label class="check"><input type="checkbox" th:field="*{madeToOrder}"> Made to order</label>
+        <label class="check"><input type="checkbox" th:field="*{featured}"> Featured on home page</label>
+        <label class="check"><input type="checkbox" th:field="*{active}"> Live on the site</label>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button type="submit" class="btn btn-lg">Save product</button>
+      <a href="/admin/products" class="btn btn-lg btn-outline">Cancel</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>

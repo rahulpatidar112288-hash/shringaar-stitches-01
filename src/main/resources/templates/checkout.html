@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Checkout')}"></th:block>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header('cart')}"></header>
+
+<main id="main" class="container section">
+  <div class="section-head">
+    <p class="eyebrow">Checkout</p>
+    <h1 class="h2">Delivery and payment</h1>
+  </div>
+
+  <form th:action="@{/checkout}" method="post" th:object="${form}" class="two-col" novalidate>
+    <div class="main stack" style="gap: 40px">
+      <fieldset>
+        <legend class="field-label">Your details</legend>
+        <div class="form-grid">
+          <label class="field" th:classappend="${#fields.hasErrors('name')} ? 'has-error'">Full name
+            <input type="text" th:field="*{name}" autocomplete="name" required>
+            <span class="error" th:errors="*{name}"></span>
+          </label>
+          <label class="field" th:classappend="${#fields.hasErrors('phone')} ? 'has-error'">Phone (WhatsApp)
+            <input type="tel" th:field="*{phone}" autocomplete="tel" placeholder="+91 " required>
+            <span class="error" th:errors="*{phone}"></span>
+          </label>
+          <label class="field full" th:classappend="${#fields.hasErrors('email')} ? 'has-error'">Email <span class="muted" style="font-weight: 400">(optional)</span>
+            <input type="email" th:field="*{email}" autocomplete="email">
+            <span class="error" th:errors="*{email}"></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="field-label">Delivery address</legend>
+        <div class="form-grid">
+          <label class="field full" th:classappend="${#fields.hasErrors('address')} ? 'has-error'">Address
+            <textarea th:field="*{address}" autocomplete="street-address" rows="3" required></textarea>
+            <span class="error" th:errors="*{address}"></span>
+          </label>
+          <label class="field" th:classappend="${#fields.hasErrors('city')} ? 'has-error'">City
+            <input type="text" th:field="*{city}" autocomplete="address-level2" required>
+            <span class="error" th:errors="*{city}"></span>
+          </label>
+          <label class="field" th:classappend="${#fields.hasErrors('pincode')} ? 'has-error'">PIN code
+            <input type="text" th:field="*{pincode}" autocomplete="postal-code" inputmode="numeric" maxlength="6" required>
+            <span class="error" th:errors="*{pincode}"></span>
+          </label>
+          <label class="field full">Notes for the tailor <span class="muted" style="font-weight: 400">(optional)</span>
+            <textarea th:field="*{notes}" rows="3" placeholder="Occasion date, measurements, colour changes…"></textarea>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="field-label">Payment</legend>
+        <div class="stack">
+          <label class="radio-card" th:each="m : ${paymentMethods}">
+            <input type="radio" th:field="*{paymentMethod}" th:value="${m}">
+            <span><b th:text="${m.label}">Cash on delivery</b></span>
+          </label>
+          <span class="error-text" th:errors="*{paymentMethod}"></span>
+        </div>
+      </fieldset>
+    </div>
+
+    <aside class="aside panel">
+      <h2 class="h3" style="margin-bottom: 12px">Your order</h2>
+      <div class="mini-line" th:each="line : ${cart.lines}">
+        <span>
+          <span th:text="${line.name}">Rani pink lehenga</span>
+          <span class="muted" th:text="|${line.size != null ? ' · ' + line.size : ''} × ${line.quantity}|"> · M × 1</span>
+        </span>
+        <span th:text="${@fmt.money(line.lineTotal)}">₹85,000</span>
+      </div>
+      <div class="summary-row summary-total"><span>Total</span><span th:text="${@fmt.money(cart.subtotal)}">₹0</span></div>
+      <button type="submit" class="btn btn-lg btn-block" style="margin-top: 20px">Place order</button>
+      <p class="note" style="margin-top: 12px">We'll confirm measurements, delivery date and charges with you on WhatsApp before we start stitching.</p>
+    </aside>
+  </form>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<a th:replace="~{fragments/layout :: whatsapp-fab}"></a>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Order placed')}"></th:block>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header('')}"></header>
+
+<main id="main" class="confirm">
+  <svg th:replace="~{fragments/layout :: mark(60, 72)}"></svg>
+  <p class="eyebrow">Thank you, <span th:text="${order.customerName}">Priya</span></p>
+  <h1 class="h2">Your order is placed</h1>
+  <span class="ref" th:text="${order.reference}">SS-7F3K9Q</span>
+  <p class="lead" style="margin: 0 auto">Send the order to us on WhatsApp so we can confirm your measurements and delivery date.</p>
+  <a th:href="@{/enquire/order/{r}(r=${order.reference})}" target="_blank" rel="noopener nofollow" class="btn btn-lg btn-whatsapp">
+    <th:block th:replace="~{fragments/layout :: whatsapp-icon(22)}"></th:block>Send order on WhatsApp
+  </a>
+
+  <div class="panel">
+    <div class="mini-line" th:each="item : ${order.items}">
+      <span>
+        <span th:text="${item.productName}">Rani pink lehenga</span>
+        <span class="muted" th:text="|${item.size != null ? ' · ' + item.size : ''} × ${item.quantity}|"></span>
+      </span>
+      <span th:text="${@fmt.money(item.lineTotal)}">₹85,000</span>
+    </div>
+    <div class="summary-row summary-total"><span>Total</span><span th:text="${@fmt.money(order.total)}">₹0</span></div>
+    <div class="summary-row muted"><span>Payment</span><span th:text="${order.paymentMethod.label}">Cash on delivery</span></div>
+    <div class="summary-row muted"><span>Deliver to</span><span style="text-align: right" th:text="|${order.address}, ${order.city} ${order.pincode}|">Address</span></div>
+  </div>
+  <a href="/collections" class="btn btn-outline">Continue shopping</a>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<a th:replace="~{fragments/layout :: whatsapp-fab}"></a>
+</body>
+</html>

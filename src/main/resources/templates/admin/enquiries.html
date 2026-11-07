@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><th:block th:replace="~{admin/_nav :: head('WhatsApp enquiries')}"></th:block></head>
+<body>
+<header th:replace="~{admin/_nav :: bar}"></header>
+<main class="container section-sm">
+  <h1 class="h2" style="margin-bottom: 8px">WhatsApp enquiries</h1>
+  <p class="muted" style="margin: 0 0 24px">Every click on a WhatsApp button, with the message that was pre-filled. The chat itself continues in WhatsApp.</p>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>When</th><th>From</th><th>Product</th><th>Size</th><th>Message</th></tr></thead>
+      <tbody>
+        <tr th:each="e : ${enquiries}">
+          <td style="white-space: nowrap" th:text="${@fmt.stamp(e.createdAt)}"></td>
+          <td><span class="badge" th:text="${e.source}"></span></td>
+          <td th:text="${e.productName} ?: '—'"></td>
+          <td th:text="${e.size} ?: '—'"></td>
+          <td><p class="pre" th:text="${e.message}"></p></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(enquiries)}"><td colspan="5" class="muted">No enquiries yet.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><th:block th:replace="~{admin/_nav :: head('Products')}"></th:block></head>
+<body>
+<header th:replace="~{admin/_nav :: bar}"></header>
+<main class="container section-sm">
+  <div class="section-head row" style="margin-bottom: 24px">
+    <h1 class="h2">Products</h1>
+    <a href="/admin/products/new" class="btn">Add product</a>
+  </div>
+  <th:block th:replace="~{admin/_nav :: flash}"></th:block>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Code</th><th>Name</th><th>Category</th><th>Price</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <tr th:each="p : ${products}">
+          <td th:text="${p.sku}">SS-0001</td>
+          <td>
+            <span class="swatch" th:style="'background:' + ${p.washColor}"></span>
+            <a th:href="@{/admin/products/{id}(id=${p.id})}" th:text="${p.name}">Name</a>
+            <span th:if="${p.featured}" class="badge" style="margin-left: 6px">Featured</span>
+          </td>
+          <td th:text="${p.category.name}"></td>
+          <td th:text="${@fmt.money(p.price)}"></td>
+          <td><span class="badge" th:classappend="${!p.active} ? 'badge-off'" th:text="${p.active} ? 'Live' : 'Hidden'"></span></td>
+          <td style="white-space: nowrap">
+            <a th:if="${p.active}" th:href="@{/products/{s}(s=${p.slug})}" target="_blank">View</a>
+            <form class="inline" th:action="@{/admin/products/{id}/toggle(id=${p.id})}" method="post">
+              <button type="submit" class="btn btn-link" th:text="${p.active} ? 'Hide' : 'Publish'">Hide</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

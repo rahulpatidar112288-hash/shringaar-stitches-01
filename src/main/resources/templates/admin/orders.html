@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><th:block th:replace="~{admin/_nav :: head('Orders')}"></th:block></head>
+<body>
+<header th:replace="~{admin/_nav :: bar}"></header>
+<main class="container section-sm">
+  <h1 class="h2" style="margin-bottom: 24px">Orders</h1>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Reference</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Placed</th></tr></thead>
+      <tbody>
+        <tr th:each="o : ${orders}">
+          <td><a th:href="@{/admin/orders/{id}(id=${o.id})}" th:text="${o.reference}"></a></td>
+          <td th:text="${o.customerName}"></td>
+          <td th:text="${o.phone}"></td>
+          <td th:text="${#lists.size(o.items)}"></td>
+          <td th:text="${@fmt.money(o.total)}"></td>
+          <td th:text="${o.paymentMethod.label}"></td>
+          <td><span class="badge" th:classappend="${o.status.name() == 'NEW'} ? 'badge-new'" th:text="${o.status.label}"></span></td>
+          <td th:text="${@fmt.stamp(o.createdAt)}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(orders)}"><td colspan="8" class="muted">No orders yet.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

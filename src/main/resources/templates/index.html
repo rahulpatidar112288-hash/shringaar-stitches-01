@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Bespoke Indian designer wear')}"></th:block>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header('home')}"></header>
+
+<main id="main">
+  <section class="container hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Bespoke Indian designer wear</p>
+      <h1 class="display">Stitched to you,<br>finished by hand.</h1>
+      <p class="lead">Lehengas, blouses, anarkalis and suits cut to your measurements, with embroidery chosen together at the fitting table.</p>
+      <div class="btn-row" style="margin-top: 8px">
+        <a href="/collections" class="btn btn-lg">Shop collections</a>
+        <a href="/book-a-fitting" class="btn btn-lg btn-outline">Book a fitting</a>
+      </div>
+      <p class="hindi" style="margin: 8px 0 0; font-size: 20px">श्रृंगार स्टिचेस</p>
+    </div>
+    <div class="hero-art">
+      <div class="arch"><div class="arch-inner hero-photo" role="img" aria-label="A bride in a hand-embroidered lehenga"></div></div>
+    </div>
+  </section>
+
+  <div class="container"><hr class="stitch"></div>
+
+  <section class="container section" id="services">
+    <div class="section-head">
+      <p class="eyebrow">What we make</p>
+      <h2 class="h2">Three ways to work with us</h2>
+    </div>
+    <div class="services">
+      <div class="service">
+        <span class="num">01</span>
+        <h3 class="h3">Bridal couture</h3>
+        <p>Wedding lehengas and reception outfits designed from scratch, with three fittings and hand embroidery.</p>
+      </div>
+      <div class="service">
+        <span class="num">02</span>
+        <h3 class="h3">Custom tailoring</h3>
+        <p>Bring your fabric or choose ours. Blouses, suits and kurtas stitched to your exact measurements.</p>
+      </div>
+      <div class="service">
+        <span class="num">03</span>
+        <h3 class="h3">Alterations and restyling</h3>
+        <p>Refit a family heirloom or give a saree new life as a lehenga or anarkali.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band-white" id="collections">
+    <div class="container section">
+      <div class="section-head row">
+        <div class="section-head" style="margin: 0">
+          <p class="eyebrow">Collections</p>
+          <h2 class="h2">Starting points for your piece</h2>
+        </div>
+        <a href="/collections" class="btn-link btn">See all designs</a>
+      </div>
+      <nav class="chips" aria-label="Categories" style="margin-bottom: 40px">
+        <a href="/collections" class="chip">All</a>
+        <a th:each="c : ${categories}" th:href="@{/collections(category=${c.slug})}" class="chip" th:text="${c.name}">Bridal</a>
+      </nav>
+      <div class="grid">
+        <th:block th:each="p : ${featured}"><a th:replace="~{fragments/layout :: card(${p})}"></a></th:block>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section" id="process">
+    <div class="section-head">
+      <p class="eyebrow">How it works</p>
+      <h2 class="h2">From first sketch to final fitting</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="num">1</span><h3 class="h3" style="font-size: 26px">Consult</h3><p>Share the occasion, references and budget at the studio, or on a video or phone call.</p></div>
+      <div class="step"><span class="num">2</span><h3 class="h3" style="font-size: 26px">Measure</h3><p>A full measurement session at the studio, or guided measurements over video call.</p></div>
+      <div class="step"><span class="num">3</span><h3 class="h3" style="font-size: 26px">Fittings</h3><p>Two trial fittings so the fall and finish are right.</p></div>
+      <div class="step"><span class="num">4</span><h3 class="h3" style="font-size: 26px">Deliver</h3><p>Pressed, packed and ready for the day.</p></div>
+    </div>
+  </section>
+
+  <section class="band-maroon">
+    <div class="container section cta">
+      <div class="cta-copy">
+        <p class="eyebrow">Have a design in mind?</p>
+        <p class="quote">Send us a photo or a sketch on WhatsApp and we'll tell you what it takes to make it yours.</p>
+      </div>
+      <div class="btn-row">
+        <a href="/enquire" target="_blank" rel="noopener nofollow" class="btn btn-lg btn-whatsapp">
+          <th:block th:replace="~{fragments/layout :: whatsapp-icon(22)}"></th:block>Chat on WhatsApp
+        </a>
+        <a href="/book-a-fitting" class="btn btn-lg btn-ivory">Book a fitting</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<a th:replace="~{fragments/layout :: whatsapp-fab}"></a>
+</body>
+</html>

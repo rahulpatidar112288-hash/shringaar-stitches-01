@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><th:block th:replace="~{admin/_nav :: head('Sign in')}"></th:block></head>
+<body>
+<main class="confirm" style="max-width: 420px">
+  <svg th:replace="~{fragments/layout :: mark(60, 72)}"></svg>
+  <h1 class="h2">Staff sign in</h1>
+  <div th:if="${param.error}" class="alert alert-error" role="alert" style="width: 100%">Wrong username or password.</div>
+  <div th:if="${param.logout}" class="alert alert-ok" role="status" style="width: 100%">You're signed out.</div>
+  <form th:action="@{/admin/login}" method="post" class="panel stack" style="gap: 16px">
+    <label class="field">Username<input type="text" name="username" autocomplete="username" required autofocus></label>
+    <label class="field">Password<input type="password" name="password" autocomplete="current-password" required></label>
+    <button class="btn btn-lg btn-block" type="submit">Sign in</button>
+  </form>
+  <a href="/">Back to the site</a>
+</main>
+</body>
+</html>

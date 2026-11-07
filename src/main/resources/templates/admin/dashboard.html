@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><th:block th:replace="~{admin/_nav :: head('Dashboard')}"></th:block></head>
+<body>
+<header th:replace="~{admin/_nav :: bar}"></header>
+<main class="container section-sm">
+  <h1 class="h2" style="margin-bottom: 32px">Dashboard</h1>
+  <div class="stats">
+    <a class="stat" href="/admin/orders"><b th:text="${newOrders}">0</b>New orders</a>
+    <a class="stat" href="/admin/enquiries"><b th:text="${enquiryCount}">0</b>WhatsApp enquiries</a>
+    <a class="stat" href="/admin/appointments" th:if="${remindersPending > 0}" style="border-color: var(--maroon-700)"><b th:text="${remindersPending}">0</b>Reminders to send</a>
+    <a class="stat" href="/admin/appointments"><b th:text="${appointmentCount}">0</b>Appointments booked</a>
+    <a class="stat" href="/admin/products"><b th:text="${productCount}">0</b>Products</a>
+  </div>
+
+  <h2 class="h3" style="margin-bottom: 16px">Recent orders</h2>
+  <div class="table-wrap" style="margin-bottom: 40px">
+    <table class="table">
+      <thead><tr><th>Reference</th><th>Customer</th><th>Total</th><th>Status</th><th>Placed</th></tr></thead>
+      <tbody>
+        <tr th:each="o : ${recentOrders}">
+          <td><a th:href="@{/admin/orders/{id}(id=${o.id})}" th:text="${o.reference}">SS-</a></td>
+          <td th:text="${o.customerName}"></td>
+          <td th:text="${@fmt.money(o.total)}"></td>
+          <td><span class="badge" th:classappend="${o.status.name() == 'NEW'} ? 'badge-new'" th:text="${o.status.label}"></span></td>
+          <td th:text="${@fmt.stamp(o.createdAt)}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(recentOrders)}"><td colspan="5" class="muted">No orders yet.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="h3" style="margin-bottom: 16px">Latest WhatsApp enquiries</h2>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>When</th><th>From</th><th>Product</th><th>Size</th></tr></thead>
+      <tbody>
+        <tr th:each="e : ${recentEnquiries}">
+          <td th:text="${@fmt.stamp(e.createdAt)}"></td>
+          <td><span class="badge" th:text="${e.source}"></span></td>
+          <td th:text="${e.productName} ?: '—'"></td>
+          <td th:text="${e.size} ?: '—'"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(recentEnquiries)}"><td colspan="4" class="muted">No enquiries yet.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

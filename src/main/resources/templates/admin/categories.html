@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><th:block th:replace="~{admin/_nav :: head('Categories')}"></th:block></head>
+<body>
+<header th:replace="~{admin/_nav :: bar}"></header>
+<main class="container section-sm" style="max-width: 860px">
+  <h1 class="h2" style="margin-bottom: 24px">Categories</h1>
+  <th:block th:replace="~{admin/_nav :: flash}"></th:block>
+  <div class="table-wrap" style="margin-bottom: 32px">
+    <table class="table">
+      <thead><tr><th>Name</th><th>Link</th><th>Order</th></tr></thead>
+      <tbody>
+        <tr th:each="c : ${categories}">
+          <td th:text="${c.name}"></td>
+          <td><a th:href="@{/collections(category=${c.slug})}" target="_blank" th:text="'/collections?category=' + ${c.slug}"></a></td>
+          <td th:text="${c.sortOrder}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <form th:action="@{/admin/categories}" method="post" class="panel form-grid">
+    <label class="field">New category<input type="text" name="name" required placeholder="e.g. Kidswear"></label>
+    <label class="field">Order<input type="number" name="sortOrder" value="10"></label>
+    <div class="full"><button class="btn" type="submit">Add category</button></div>
+  </form>
+</main>
+</body>
+</html>

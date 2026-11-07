@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><th:block th:replace="~{admin/_nav :: head('Appointments')}"></th:block></head>
+<body>
+<header th:replace="~{admin/_nav :: bar}"></header>
+<main class="container section-sm">
+  <h1 class="h2" style="margin-bottom: 8px">Appointments</h1>
+  <p class="muted" style="margin: 0 0 24px" th:if="${autoReminders}">Automatic WhatsApp reminders are on: customers get a confirmation when they book, then reminders a day and an hour before.</p>
+  <p class="muted" style="margin: 0 0 24px" th:unless="${autoReminders}">Automatic WhatsApp reminders are off until the WhatsApp Business API is set up (see README). Send them from the list below: each button opens WhatsApp with the message typed out, and marks it sent.</p>
+
+  <section th:unless="${autoReminders}" style="margin-bottom: 48px">
+    <h2 class="h3" style="margin-bottom: 16px">Reminders due</h2>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>When</th><th>Customer</th><th>Type</th><th>Reminder</th><th></th></tr></thead>
+        <tbody>
+          <tr th:each="r : ${due}" th:with="a=${r.appointment()}" th:classappend="${r.dueNow() and !r.sent} ? 'row-due'">
+            <td style="white-space: nowrap">
+              <b th:text="${r.kind().name() == 'HOUR_BEFORE'} ? 'Today' : 'Tomorrow'">Today</b>
+              <span th:text="${@fmt.time(a.time)}">3:00 pm</span>
+              <span class="badge badge-new" th:if="${r.dueNow() and !r.sent}" style="margin-left: 6px">Send now</span>
+            </td>
+            <td><span th:text="${a.customerName}"></span><br><span class="muted" th:text="${a.phone}"></span></td>
+            <td><span class="badge" th:classappend="${a.location.remote} ? 'badge-new'" th:text="${a.location.label}"></span></td>
+            <td th:text="${r.kind().label}">Day-before reminder</td>
+            <td style="white-space: nowrap">
+              <th:block th:unless="${r.sent}">
+                <form class="inline remind-form" th:action="@{/admin/appointments/{id}/remind(id=${a.id})}" method="post" target="_blank">
+                  <input type="hidden" name="kind" th:value="${r.kind()}">
+                  <button type="submit" class="btn btn-whatsapp" style="min-height: 40px; padding: 0 16px">Send reminder</button>
+                </form>
+              </th:block>
+              <th:block th:if="${r.sent}">
+                <span class="badge" th:text="|Sent ✓ ${@fmt.stamp(r.sentAt())}|">Sent ✓</span>
+                <a th:href="${dueLinks[a.id + '-' + r.kind()]}" target="_blank" rel="noopener" style="margin-left: 8px">Open again</a>
+                <form class="inline" th:action="@{/admin/appointments/{id}/remind/undo(id=${a.id})}" method="post">
+                  <input type="hidden" name="kind" th:value="${r.kind()}">
+                  <button type="submit" class="btn btn-link">Undo</button>
+                </form>
+              </th:block>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(due)}"><td colspan="5" class="muted">No reminders due for today or tomorrow.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <h2 class="h3" style="margin-bottom: 16px">All appointments</h2>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Day</th><th>Time</th><th>For</th><th>Customer</th><th>Phone</th><th>Type</th><th>Notes</th><th>WhatsApp</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr th:each="a : ${appointments}">
+          <td style="white-space: nowrap" th:text="${@fmt.day(a.date)}"></td>
+          <td th:text="${@fmt.time(a.time)}"></td>
+          <td th:text="${a.garment}"></td>
+          <td th:text="${a.customerName}"></td>
+          <td th:text="${a.phone}"></td>
+          <td><span class="badge" th:classappend="${a.location.remote} ? 'badge-new'" th:text="${a.location.label}"></span></td>
+          <td><p class="pre" th:text="${a.notes}"></p></td>
+          <td style="white-space: nowrap">
+            <a th:href="${reminderLinks[a.id]}" target="_blank" rel="noopener">Message reminder</a><br>
+            <a th:href="${chatLinks[a.id]}" target="_blank" rel="noopener" th:text="${a.location.name() == 'VIDEO_CALL'} ? 'Open chat to video call' : 'Open chat'">Open chat</a>
+            <p class="pre" style="margin-top: 6px; white-space: normal; max-width: 220px" th:if="${a.whatsappStatus}" th:text="${a.whatsappStatus}"></p>
+            <p class="pre muted" style="margin-top: 6px" th:unless="${a.whatsappOptIn}">No reminders (opted out)</p>
+          </td>
+          <td>
+            <form th:action="@{/admin/appointments/{id}/confirm(id=${a.id})}" method="post">
+              <button class="btn btn-link" type="submit" th:text="${a.confirmed} ? 'Confirmed ✓' : 'Mark confirmed'"></button>
+            </form>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(appointments)}"><td colspan="9" class="muted">No appointments booked yet.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+<script>
+  // After a reminder opens in WhatsApp, refresh so it shows as sent.
+  document.querySelectorAll('.remind-form').forEach(function (f) {
+    f.addEventListener('submit', function () { setTimeout(function () { location.reload(); }, 1200); });
+  });
+</script>
+</body>
+</html>
