@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <th:block th:replace="~{fragments/layout :: head(${product.name})}"></th:block>
+  <meta property="og:title" th:content="${product.name}">
+  <meta property="og:description" th:content="${product.detail}">
+  <meta property="og:image" th:if="${product.hasImage()}" th:content="${product.imageUrl}">
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header('collections')}"></header>
+
+<main id="main" class="container">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/collections">Collections</a><span aria-hidden="true">/</span>
+    <a th:href="@{/collections(category=${product.category.slug})}" th:text="${product.category.name}">Bridal</a><span aria-hidden="true">/</span>
+    <span aria-current="page" th:text="${product.name}">Rani pink lehenga</span>
+  </nav>
+
+  <div class="product">
+    <div class="product-media">
+      <div th:replace="~{fragments/layout :: arch(${product}, ${product.name})}"></div>
+    </div>
+
+    <div class="product-info">
+      <div th:if="${error}" class="alert alert-error" role="alert" th:text="${error}"></div>
+      <p class="eyebrow" th:text="${product.category.name}">Bridal</p>
+      <h1 class="h2" style="font-size: clamp(36px, 5vw, 52px)" th:text="${product.name}">Rani pink lehenga</h1>
+      <p class="muted" style="margin: -8px 0 0; font-size: 17px" th:text="${product.detail}">Raw silk · zardozi</p>
+      <p class="product-price" style="margin: 0" th:text="${@fmt.money(product.price)}">₹85,000</p>
+      <p class="product-desc" th:text="${product.description}">Description</p>
+
+      <form th:action="@{/cart/add}" method="post" class="stack" style="gap: 24px" id="buy-form">
+        <input type="hidden" name="productId" th:value="${product.id}">
+
+        <fieldset th:unless="${#lists.isEmpty(product.sizeList)}">
+          <legend class="field-label">Size</legend>
+          <div class="chips">
+            <label class="choice" th:each="s, it : ${product.sizeList}">
+              <input type="radio" name="size" th:value="${s}" required>
+              <span th:text="${s}">M</span>
+            </label>
+          </div>
+          <p class="note" style="margin-top: 10px">Choose <b>Custom</b> and we'll take your measurements at a fitting or over WhatsApp.</p>
+        </fieldset>
+
+        <div>
+          <label class="field-label" for="qty">Quantity</label>
+          <div class="qty">
+            <button type="button" data-step="-1" aria-label="Decrease quantity">−</button>
+            <input id="qty" name="qty" type="number" min="1" max="10" value="1" inputmode="numeric">
+            <button type="button" data-step="1" aria-label="Increase quantity">+</button>
+          </div>
+        </div>
+
+        <div class="buy-actions">
+          <button type="submit" name="action" value="add" class="btn btn-lg btn-outline">Add to bag</button>
+          <button type="submit" name="action" value="buy" class="btn btn-lg">Buy now</button>
+          <a th:href="@{/enquire/product/{slug}(slug=${product.slug})}" id="wa-enquire" target="_blank" rel="noopener nofollow" class="btn btn-lg btn-whatsapp">
+            <th:block th:replace="~{fragments/layout :: whatsapp-icon(22)}"></th:block>Enquire on WhatsApp
+          </a>
+        </div>
+      </form>
+
+      <ul class="meta-list">
+        <li><b>Design code</b><span th:text="${product.sku}">SS-0001</span></li>
+        <li th:if="${product.madeToOrder}"><b>Made to order</b><span th:text="'Ready in ' + ${product.leadTime}">Ready in 3–4 weeks</span></li>
+        <li><b>Consultation</b><span>At our studio, or on a video or phone call. <a href="/book-a-fitting">Book one</a></span></li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="section-sm" th:unless="${#lists.isEmpty(related)}" style="padding-bottom: 96px">
+    <hr class="stitch" style="margin-bottom: 48px">
+    <div class="section-head"><h2 class="h2" style="font-size: 36px">You may also like</h2></div>
+    <div class="grid">
+      <th:block th:each="p : ${related}"><a th:replace="~{fragments/layout :: card(${p})}"></a></th:block>
+    </div>
+  </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<a th:replace="~{fragments/layout :: whatsapp-fab}"></a>
+<script src="/js/product.js" defer></script>
+</body>
+</html>

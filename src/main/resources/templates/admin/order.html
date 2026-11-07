@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><th:block th:replace="~{admin/_nav :: head(${order.reference})}"></th:block></head>
+<body>
+<header th:replace="~{admin/_nav :: bar}"></header>
+<main class="container section-sm">
+  <a href="/admin/orders">← All orders</a>
+  <h1 class="h2" style="margin: 16px 0 24px" th:text="${order.reference}">SS-</h1>
+  <th:block th:replace="~{admin/_nav :: flash}"></th:block>
+  <div class="two-col">
+    <div class="main panel">
+      <div class="mini-line" th:each="i : ${order.items}">
+        <span><b th:text="${i.productName}"></b> <span class="muted" th:text="|${i.sku} ${i.size != null ? '· ' + i.size : ''} × ${i.quantity}|"></span></span>
+        <span th:text="${@fmt.money(i.lineTotal)}"></span>
+      </div>
+      <div class="summary-row summary-total"><span>Total</span><span th:text="${@fmt.money(order.total)}"></span></div>
+      <h2 class="h3" style="margin: 24px 0 8px">Notes</h2>
+      <p class="pre" th:text="${order.notes} ?: '—'"></p>
+    </div>
+    <aside class="aside panel stack">
+      <b th:text="${order.customerName}"></b>
+      <span th:text="${order.phone}"></span>
+      <span th:text="${order.email}"></span>
+      <span class="pre" th:text="|${order.address}&#10;${order.city} ${order.pincode}|"></span>
+      <span class="muted" th:text="${order.paymentMethod.label}"></span>
+      <a th:href="${customerWhatsApp}" target="_blank" rel="noopener" class="btn btn-whatsapp">Message customer on WhatsApp</a>
+      <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="post" class="stack">
+        <label class="field">Status
+          <select name="status">
+            <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.label}" th:selected="${s == order.status}"></option>
+          </select>
+        </label>
+        <button class="btn" type="submit">Update status</button>
+      </form>
+    </aside>
+  </div>
+</main>
+</body>
+</html>

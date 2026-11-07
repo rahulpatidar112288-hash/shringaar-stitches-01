@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Your bag')}"></th:block>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header('cart')}"></header>
+
+<main id="main" class="container section">
+  <div class="section-head">
+    <p class="eyebrow">Shopping bag</p>
+    <h1 class="h2">Your bag</h1>
+  </div>
+
+  <div th:if="${added}" class="alert alert-ok" role="status" th:text="|Added ${added} to your bag.|"></div>
+  <div th:if="${error}" class="alert alert-error" role="alert" th:text="${error}"></div>
+
+  <div class="empty" th:if="${cart.empty}">
+    <h2 class="h3">Your bag is empty</h2>
+    <p class="muted" style="margin: 0">Browse the collections and add a piece you love.</p>
+    <a href="/collections" class="btn">Shop collections</a>
+  </div>
+
+  <div class="two-col" th:unless="${cart.empty}">
+    <div class="main">
+      <div class="line-item" th:each="line, it : ${cart.lines}">
+        <a th:href="@{/products/{s}(s=${line.slug})}" tabindex="-1" aria-hidden="true">
+          <div th:replace="~{fragments/layout :: arch(${line}, '')}"></div>
+        </a>
+        <div>
+          <h3><a th:href="@{/products/{s}(s=${line.slug})}" th:text="${line.name}">Rani pink lehenga</a></h3>
+          <p class="muted" style="margin: 4px 0 0; font-size: 14px">
+            <span th:text="${line.detail}">Raw silk</span>
+            <span th:if="${line.size}" th:text="| · Size ${line.size}|"> · Size M</span>
+          </p>
+          <p style="margin: 4px 0 0; font-size: 14px" th:text="${@fmt.money(line.unitPrice)} + ' each'">₹85,000 each</p>
+          <div class="line-controls">
+            <form th:action="@{/cart/update}" method="post">
+              <input type="hidden" name="index" th:value="${it.index}">
+              <label th:for="'qty-' + ${it.index}" class="sr-only">Quantity</label>
+              <select th:id="'qty-' + ${it.index}" name="qty" onchange="this.form.submit()">
+                <option th:each="n : ${#numbers.sequence(1, 10)}" th:value="${n}" th:text="${n}" th:selected="${n == line.quantity}">1</option>
+              </select>
+              <noscript><button class="btn btn-outline" type="submit">Update</button></noscript>
+            </form>
+            <form th:action="@{/cart/remove}" method="post">
+              <input type="hidden" name="index" th:value="${it.index}">
+              <button class="btn btn-link" type="submit">Remove</button>
+            </form>
+          </div>
+        </div>
+        <span class="line-total" style="font-weight: 500" th:text="${@fmt.money(line.lineTotal)}">₹85,000</span>
+      </div>
+    </div>
+
+    <aside class="aside panel">
+      <h2 class="h3" style="margin-bottom: 16px">Summary</h2>
+      <div class="summary-row"><span th:text="|Items (${cart.itemCount})|">Items</span><span th:text="${@fmt.money(cart.subtotal)}">₹0</span></div>
+      <div class="summary-row muted"><span>Delivery</span><span>Confirmed with your order</span></div>
+      <div class="summary-row summary-total"><span>Total</span><span th:text="${@fmt.money(cart.subtotal)}">₹0</span></div>
+      <a href="/checkout" class="btn btn-lg btn-block" style="margin-top: 20px">Checkout</a>
+      <div class="or">or</div>
+      <a href="/enquire/cart" target="_blank" rel="noopener nofollow" class="btn btn-lg btn-block btn-whatsapp">
+        <th:block th:replace="~{fragments/layout :: whatsapp-icon(22)}"></th:block>Order on WhatsApp
+      </a>
+      <p class="note" style="margin-top: 12px; text-align: center">Sends your bag to us in a WhatsApp message.</p>
+    </aside>
+  </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<a th:replace="~{fragments/layout :: whatsapp-fab}"></a>
+</body>
+</html>

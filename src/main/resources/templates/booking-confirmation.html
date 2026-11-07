@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Appointment booked')}"></th:block>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header('')}"></header>
+
+<main id="main" class="confirm">
+  <svg th:replace="~{fragments/layout :: mark(60, 72)}"></svg>
+  <p class="eyebrow">See you soon, <span th:text="${appointment.customerName}">Priya</span></p>
+  <h1 class="h2" th:text="|Your ${appointment.location.label.toLowerCase()} is booked|">Your video call is booked</h1>
+  <p class="lead" style="margin: 0 auto" th:text="${howToJoin}">We will video call you on WhatsApp.</p>
+  <p class="note" th:if="${autoReminders}">We've sent a confirmation to your WhatsApp and will remind you a day before and an hour before.</p>
+  <p class="note" th:unless="${autoReminders}">Send the booking to us on WhatsApp so we can confirm your slot. We'll remind you on WhatsApp before your appointment.</p>
+  <a th:href="@{/enquire/booking/{id}(id=${appointment.id})}" target="_blank" rel="noopener nofollow" class="btn btn-lg btn-whatsapp">
+    <th:block th:replace="~{fragments/layout :: whatsapp-icon(22)}"></th:block>Confirm on WhatsApp
+  </a>
+  <div class="panel">
+    <div class="summary-row"><span class="muted">For</span><span th:text="${appointment.garment}">Bridal lehenga</span></div>
+    <div class="summary-row"><span class="muted">When</span><span th:text="|${@fmt.day(appointment.date)}, ${@fmt.time(appointment.time)}|">Thu 12 Nov, 11:30 am</span></div>
+    <div class="summary-row"><span class="muted">Type</span><span th:text="${appointment.location.label}">Video call</span></div>
+    <div class="summary-row"><span class="muted">Phone</span><span th:text="${appointment.phone}">+91</span></div>
+  </div>
+  <a href="/collections" class="btn btn-outline">Browse collections</a>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<a th:replace="~{fragments/layout :: whatsapp-fab}"></a>
+</body>
+</html>

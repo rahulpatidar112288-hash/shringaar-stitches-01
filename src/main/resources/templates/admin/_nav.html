@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:fragment="head(title)">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title th:text="${title} + ' · Admin'">Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+</th:block>
+
+<header th:fragment="bar" class="admin-bar">
+  <nav class="container" aria-label="Admin">
+    <a href="/admin" class="brand-name" style="font-family: var(--font-display); font-weight: 600">Shringaar · Admin</a>
+    <a href="/admin">Dashboard</a>
+    <a href="/admin/products">Products</a>
+    <a href="/admin/categories">Categories</a>
+    <a href="/admin/orders">Orders</a>
+    <a href="/admin/appointments">Appointments</a>
+    <a href="/admin/enquiries">WhatsApp enquiries</a>
+    <a href="/" target="_blank">View site</a>
+    <form th:action="@{/admin/logout}" method="post" style="display: inline"><button type="submit">Sign out</button></form>
+  </nav>
+</header>
+
+<th:block th:fragment="flash">
+  <div th:if="${message}" class="alert alert-ok" role="status" th:text="${message}"></div>
+  <div th:if="${error}" class="alert alert-error" role="alert" th:text="${error}"></div>
+</th:block>
+</html>

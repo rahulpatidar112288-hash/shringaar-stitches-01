@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<!-- <head> contents shared by every page -->
+<th:block th:fragment="head(title)">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title} + ' · ' + ${store.name}">Shringaar Stitches</title>
+  <meta name="description" th:content="${store.tagline} + '. Lehengas, blouses, anarkalis and suits for women, cut to your measurements.'">
+  <meta name="theme-color" content="#6B1E2E">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+</th:block>
+
+<!-- Arch-and-needle logo mark -->
+<svg th:fragment="mark(w,h)" th:attr="width=${w},height=${h}" viewBox="0 0 100 120" aria-hidden="true">
+  <path d="M18 116 V62 C18 38 40 28 50 8 C60 28 82 38 82 62 V116" fill="none" stroke="#B8862F" stroke-width="4"></path>
+  <path d="M27 116 V64 C27 46 43 38 50 24 C57 38 73 46 73 64 V116" fill="none" stroke="#B8862F" stroke-width="2" stroke-dasharray="4 3"></path>
+  <text x="50" y="92" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="40" font-weight="600" fill="#6B1E2E">S</text>
+  <line x1="8" y1="108" x2="92" y2="40" stroke="#6B1E2E" stroke-width="3" stroke-linecap="round"></line>
+</svg>
+
+<header th:fragment="header(active)" class="site-header">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <nav class="container nav" aria-label="Main">
+    <a href="/" class="brand">
+      <svg th:replace="~{fragments/layout :: mark(34, 41)}"></svg>
+      <span class="brand-text">
+        <span class="brand-name">Shringaar</span>
+        <span class="brand-sub">Stitches</span>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/collections" th:attr="aria-current=${active == 'collections'} ? 'page' : null">Collections</a>
+      <a href="/collections?category=bridal" th:attr="aria-current=${active == 'bridal'} ? 'page' : null">Bridal</a>
+      <a href="/#process">How it works</a>
+      <a href="#visit">Visit us</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/cart" class="cart-link" th:attr="aria-label=|Shopping bag, ${cartCount} items|">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12.1a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+        <span class="cart-badge" th:if="${cartCount > 0}" th:text="${cartCount}" aria-hidden="true">2</span>
+      </a>
+      <a href="/book-a-fitting" class="btn">Book a fitting</a>
+    </div>
+  </nav>
+</header>
+
+<th:block th:fragment="whatsapp-icon(size)">
+  <svg th:attr="width=${size},height=${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4z"></path>
+    <path d="M9 8.6c.2-.6.7-.8 1-.6l.9 1.7c.1.3 0 .6-.2.8l-.5.5c.4 1 1.3 1.9 2.4 2.4l.5-.5c.2-.2.5-.3.8-.2l1.7.9c.3.2.1.8-.5 1.1-.8.4-1.8.3-2.9-.3a8.6 8.6 0 0 1-3.3-3.3c-.6-1-.2-2-.0-2.5z" fill="currentColor" stroke="none"></path>
+  </svg>
+</th:block>
+
+<footer th:fragment="footer" class="site-footer" id="visit">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <span class="h3" style="color: var(--maroon-700)" th:text="${store.name}">Shringaar Stitches</span>
+      <p class="muted" style="margin: 0; max-width: 340px; line-height: 1.6" th:text="${store.tagline} + '. Fittings by appointment.'">Tailored Indian designer wear.</p>
+      <span class="hindi" style="font-size: 20px">श्रृंगार स्टिचेस</span>
+    </div>
+    <div class="footer-col">
+      <span class="eyebrow">Studio</span>
+      <span th:text="${store.address}">[ADDRESS]</span>
+      <span th:text="${store.city}">[CITY]</span>
+      <a href="/book-a-fitting">Book a fitting</a>
+    </div>
+    <div class="footer-col">
+      <span class="eyebrow">Contact</span>
+      <span th:text="${store.phone}">[PHONE]</span>
+      <a th:href="'mailto:' + ${store.email}" th:text="${store.email}">[EMAIL]</a>
+      <a th:href="${store.instagramUrl}" rel="noopener" target="_blank">Instagram</a>
+      <a href="/enquire" target="_blank" rel="noopener nofollow">WhatsApp</a>
+    </div>
+    <div class="footer-legal">
+      <span th:text="'© ' + ${#dates.year(#dates.createNow())} + ' ' + ${store.name}">© Shringaar Stitches</span>
+      <a href="/admin" style="color: var(--muted)">Staff</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating WhatsApp button; each page sets ${whatsappLink} to a context-aware enquiry -->
+<a th:fragment="whatsapp-fab" th:href="${whatsappLink}" class="wa-fab" target="_blank" rel="noopener nofollow" aria-label="Chat with us on WhatsApp">
+  <th:block th:replace="~{fragments/layout :: whatsapp-icon(26)}"></th:block>
+  <span class="wa-label">Chat on WhatsApp</span>
+</a>
+
+<!-- Arch-framed product image -->
+<div th:fragment="arch(item, alt)" class="arch">
+  <div class="arch-inner" th:classappend="${item.hasImage()} ? 'has-img'" th:style="'background-color:' + ${item.washColor}">
+    <img th:if="${item.hasImage()}" th:src="${item.imageUrl}" th:alt="${alt}" loading="lazy">
+  </div>
+</div>
+
+<!-- Product card used in grids -->
+<a th:fragment="card(p)" th:href="@{/products/{slug}(slug=${p.slug})}" class="card">
+  <div th:replace="~{fragments/layout :: arch(${p}, ${p.name})}"></div>
+  <span class="card-tag" th:text="${p.category.name}">Bridal</span>
+  <span class="card-name" th:text="${p.name}">Rani pink lehenga</span>
+  <span class="card-detail" th:text="${p.detail}">Raw silk · zardozi</span>
+  <span class="card-price" th:text="${@fmt.money(p.price)}">₹85,000</span>
+</a>
+
+</html>
